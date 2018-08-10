@@ -1,6 +1,6 @@
 # 本部分主要介绍了使用神经网络来对著名的MNIST数据集进行分类
 ## 其中运用了很多之前学过的东西比如学习率衰减，模型参数的滑动平均，正则化等等
-###完整的mnist程序的流程：<br>
+### 完整的mnist程序的流程：<br>
 1. 加载数据 <br>
 2. 设置模型的参数 <br>
 3. 定义前向传播函数(分为滑动平均和非滑动平均)<br>
@@ -51,6 +51,7 @@ After 26000 training steps, validation accurary is 0.9844<br>
 After 27000 training steps, validation accurary is 0.9846<br>
 After 28000 training steps, validation accurary is 0.9848<br>
 After 29000 training steps, validation accurary is 0.9844<br>
+可以看出验证集的精度在不断的提升<br>
 ### 验证集和测试集之间的差距如下
 ![](https://github.com/Anosy/tensorflow_DL/blob/master/Mnist/Mnist_1/testvalidate.png)<br>
 
