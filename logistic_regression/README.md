@@ -31,6 +31,6 @@ After 700 training step(s), cross entropy on all data is 0.00016896293<br>
 After 800 training step(s), cross entropy on all data is 0.0001469649<br> 
 After 900 training step(s), cross entropy on all data is 0.0001293088<br> 
 train accuracy:  100%<br> 
-test accuracy:  64%<br> 
+test accuracy:  64%<br>  
 
 ### 显然上述两个模型都发生了严重的过拟合
