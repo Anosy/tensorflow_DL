@@ -4,5 +4,5 @@
 ![](https://github.com/Anosy/tensorflow_DL/tree/master/regularization_l1_l2/NN.png)
 显然出现了严重的过拟合
 ### 添加上正则化的神经网络的效果：
-![](https://github.com/Anosy/tensorflow_DL/tree/master/regularization_l1_l2/NN+L2.png)
+![](https://github.com/Anosy/tensorflow_DL/blob/master/regularization_l1_l2/NN%2BL2.png)
 显然过拟合消除了
