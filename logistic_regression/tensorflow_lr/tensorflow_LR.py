@@ -14,7 +14,7 @@ y = tf.matmul(x, W) + b
 cost = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=y, labels=y_))
 # cosy = cost + tf.contrib.layers.l1_regularizer(0.1)(W) # 加上了l2正则化
 
-correct_pred = tf.equal((y > 0.5), (y_ > 0.5))
+correct_pred = tf.equal((tf.nn.sigmoid(y) > 0.5), (y_ > 0.5))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 optimizer = tf.train.AdamOptimizer(0.1).minimize(cost)
