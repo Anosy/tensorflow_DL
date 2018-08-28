@@ -34,10 +34,12 @@ Inception模块的结构如下图所示：<br>
 8.main()  主函数<br>
 ### 模型实现逻辑
 先加载以及训练好的Inception-v3。加载的代码如下：<br>
+
 	with gfile.FastGFile("./graph.pb",'rb') as f:
 		graph_def = tf.GraphDef()
 		graph_def.ParseFromString(f.read())
 		tf.import_graph_def(graph_def, name='')
+
 然后通过import_graph_def，返回瓶颈层的输出，以及模型的输入<br>
 定义最后一层新的神经网络，全连接+softmax回归<br>
 开启session。训练过程：先通过原始模型，计算出瓶颈层的输出，然后将输出在导入到新搭建的网络中。模型保存：每500次保存模型一次<br>
