@@ -2,8 +2,9 @@
 ## 文件结构如下：
 ![](https://github.com/Anosy/tensorflow_DL/blob/master/inception-v3_transfer-learning/picture/structure.png)<br>
 其中模型下载的地址为：<br>
-    http://download.tensorflow.org/example_images/flower_photos.tgz
-    https://storage.googleapis.com/download.tensorflow.org/models/inception_dec_2015.zip
+	http://download.tensorflow.org/example_images/flower_photos.tgz
+	https://storage.googleapis.com/download.tensorflow.org/models/inception_dec_2015.zip
+
 ## 第一部分：Inception简介
 在GoogleNet出现前，主流的神经网络存在三大问题：<br>
 1.参数太多，容易过拟合，若训练数据集有限；<br>
@@ -33,10 +34,10 @@ Inception模块的结构如下图所示：<br>
 8.main()  主函数<br>
 ### 模型实现逻辑
 先加载以及训练好的Inception-v3。加载的代码如下：<br>
-    with gfile.FastGFile("./graph.pb",'rb') as f:
-        graph_def = tf.GraphDef()
-        graph_def.ParseFromString(f.read())
-        tf.import_graph_def(graph_def, name='')
+	with gfile.FastGFile("./graph.pb",'rb') as f:
+		graph_def = tf.GraphDef()
+		graph_def.ParseFromString(f.read())
+		tf.import_graph_def(graph_def, name='')
 然后通过import_graph_def，返回瓶颈层的输出，以及模型的输入<br>
 定义最后一层新的神经网络，全连接+softmax回归<br>
 开启session。训练过程：先通过原始模型，计算出瓶颈层的输出，然后将输出在导入到新搭建的网络中。模型保存：每500次保存模型一次<br>
