@@ -14,4 +14,4 @@
         tf.shape(img_data), bounding_boxes=boxes)                   随机选择标注框的绝对位置<br>
 10.distorted_image = tf.slice(img_data, begin, size)                取出标注框的图片内容<br>
 最终得到的结果为：
-![](https://github.com/Anosy/tensorflow_DL/blob/master/inception-v3_transfer-learning/picture/Results_from_six_situations.png)<br>
+![](https://github.com/Anosy/tensorflow_DL/blob/master/picture_process/picture/Results_from_six_situations.png)<br>
