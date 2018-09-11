@@ -1,70 +1,52 @@
 import tensorflow as tf
 import numpy as np
 
-def distort_color(image, color_ordering=0):
-    if color_ordering == 0:
-        image = tf.image.random_brightness(image, max_delta=32. / 255.)
-        image = tf.image.random_saturation(image, lower=0.5, upper=1.5)
-        image = tf.image.random_hue(image, max_delta=0.5)
-        image = tf.image.random_contrast(image, lower=0.5, upper=1.5)
-    else:
-        image = tf.image.random_saturation(image, lower=0.5, upper=1.5)
-        image = tf.image.random_brightness(image, max_delta=32. / 255.)
-        image = tf.image.random_contrast(image, lower=0.5, upper=1.5)
-        image = tf.image.random_hue(image, max_delta=0.2)
+files = tf.train.match_filenames_once("/path/to/data.tfrecords-*")  # 此函数获取一个符合正则表达式的所有文件
+file_queue = tf.train.string_input_producer(files, shuffle=False)
 
-    return tf.clip_by_value(image, 0.0, 1.0)
+reader = tf.TFRecordReader()
+_, serialized_example = reader.read(file_queue)
+# 解析数据
+features = tf.parse_single_example(serialized_example, features={
+    'image': tf.FixedLenFeature([], tf.string),
+    'label': tf.FixedLenFeature([], tf.int64),
+    'height': tf.FixedLenFeature([], tf.int64),
+    'width': tf.FixedLenFeature([], tf.int64),
+    'channel': tf.FixedLenFeature([], tf.int64),
+})
+image, label = features['image'], features['label']
+height, width = features['heiht'], features['width']
+channel = features['channel']
+image_decode = tf.decode_raw(image, tf.uint8)
+image_decode.set_shape([height, width, channel])
 
-def preprocess_for_train(image, height, width, bbox):
-    # # 查看是否存在标注框,如果没有表示整个图片就是需要关注的部分
-    # if bbox is None:
-    #     bbox = tf.constant([0.0, 0.0, 1.0, 1.0], dtype=tf.float32, shape=[1, 1, 4])
-    # # 转化图片张量的类型
-    # if image.dtype != tf.float32:
-    #     image = tf.image.convert_image_dtype(image, dtype=tf.float32)
-    # # 随机的截取图片中一个块。
-    # bbox_begin, bbox_size, _ = tf.image.sample_distorted_bounding_box(
-    #     tf.shape(image), bounding_boxes=bbox)
-    # distorted_image = tf.slice(image, bbox_begin, bbox_size)
-    # 将随机截取的图片调整为神经网络的输入层的大小
-    distorted_image = tf.image.resize_images(image, [height, width], method=np.random.randint(4))
-    # 随机左右翻转图片
-    distorted_image = tf.image.random_flip_left_right(distorted_image)
-    # 使用一种颜色调整函数
-    distorted_image = distort_color(distorted_image, np.random.randint(1))
+# 假设神经网络输入层的图片大小为300
+image_size = 300
+distorted_image = preprocess_for_train(image_decode, image_size, image_size, None)
 
-    return distorted_image
+# 将处理过后的图像和标签数据通过tf.train.shuffle_batch 整理成神经网络训练时需要的batch
+min_after_dequeue = 1000
+batch_size = 100
+capacity = min_after_dequeue + 3 * batch_size
+# tf.train.shuffle_batch函数的入队操作就是数据处理以及预处理的过程
+image_batch, label_batch = tf.train.shuffle_batch([distorted_image, label], batch_size, capacity, min_after_dequeue,
+                                                  num_threads=5)
 
-if __name__ == '__main__':
+# 定义神经网络的优化结构以及优化过程
+logit = inference(image_batch)
+loss = cal_loss(loss, label_batch)
 
-    # 创建文件列表，并且通过列表创建输入文件队列。这里的文件夹目录为Mnist_Output
-    files = tf.train.match_filenames_once('./Mnist_Output/output.tfrecords')
-    filename_queue = tf.train.string_input_producer(files, shuffle=False)
+train_op = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
 
-    reader = tf.TFRecordReader()
-    _, serialized_example = reader.read(filename_queue)
+with tf.Session() as sess:
+    init_op = tf.global_variables_initializer()
+    sess.run(init_op)
+    # 启动线程
+    coord = tf.train.Coordinator()
+    threads = tf.train.start_queue_runners(sess, coord=coord)
+    for i in range(TRAINING_EPOCHS):
+        _, loss = sess.run([train_op, loss])
 
-    features = tf.parse_single_example(
-        serialized_example,
-        features={
-            'image_raw': tf.FixedLenFeature([], tf.string),
-            'pixels': tf.FixedLenFeature([], tf.int64),
-            'label': tf.FixedLenFeature([], tf.int64)
-        })
-
-    # tf.decode_raw 可以将字符串解析成图像对应的像素数组
-    images = tf.decode_raw(features['image_raw'], tf.uint8)
-    labels = tf.cast(features['label'], tf.int32)
-    pixels = tf.cast(features['pixels'], tf.int32)
-    sess = tf.Session()
-    print(sess.run(images).shape)
-    # # 定义神经网络输入层图片的大小
-    # image_size = 299
-    # # 使用图像处理函数来处理输入的图像
-    # distorted_image = preprocess_for_train(images, image_size, images, None)
-    # # 使用tf.train.shuffle_batch来生成batch
-    # min_after_dequeue = 10000
-    # batch_size = 100
-    # capacity = min_after_dequeue + 3 * batch_size
-    # image_batch, label_batch = tf.train.shuffle_batch([distorted_image, labels], batch_size=batch_size, capacity=capacity,
-    #                                                   min_after_dequeue=min_after_dequeue)
+    # -------停止线程
+    coord.request_stop()
+    coord.join(threads)
