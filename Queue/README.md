@@ -37,9 +37,9 @@
 
 ## 第六部分，介绍如何读取文件，并且将数据给转化成batch的格式，具体代码见：batch_queue.py
 **核心部分** <br>
-1. batch_size = 3                                       定义batch的大小
-2. capacity = 1000 + 3 * batch_size                     定义文件队列最多可以存储的样例的个数
-3. example_batch, label_batch = tf.train.batch([example, label], batch_size=batch_size, capacity=capacity)   组合样例
+1. batch_size = 3                                       定义batch的大小<br>
+2. capacity = 1000 + 3 * batch_size                     定义文件队列最多可以存储的样例的个数<br>
+3. example_batch, label_batch = tf.train.batch([example, label], batch_size=batch_size, capacity=capacity)   组合样例<br>
 **输出的结果与分析：** <br>
 
     [0 0 1] [0 1 0] <br>
