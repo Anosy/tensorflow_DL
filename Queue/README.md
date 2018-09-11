@@ -33,17 +33,17 @@
 3. reader = tf.TFRecordReader()                                                     创建一个reader来读取TFRecord文件中的样例<br>
 4. _, serialized_example = reader.read(filename_queue)                              从文件中读出一个样例<br>
 5. tf.parse_single_example(...)                                                     解析读入的一个样例<br>
-** 注： 这里需要使用 tf.local_variables_initializer() 初始化 tf.train.match_filenames_once() 中的变量，否则会报错 ** <br>
+**注： 这里需要使用 tf.local_variables_initializer() 初始化 tf.train.match_filenames_once() 中的变量，否则会报错** <br>
 
 ## 第六部分，介绍如何读取文件，并且将数据给转化成batch的格式，具体代码见：batch_queue.py
 **核心部分** <br>
 1. batch_size = 3                                       定义batch的大小
 2. capacity = 1000 + 3 * batch_size                     定义文件队列最多可以存储的样例的个数
 3. example_batch, label_batch = tf.train.batch([example, label], batch_size=batch_size, capacity=capacity)   组合样例
-** 输出的结果与分析： ** <br>
+**输出的结果与分析：** <br>
 
-    [0 0 1] [0 1 0]
-    [1 0 0] [1 0 1]
+    [0 0 1] [0 1 0] <br>
+    [1 0 0] [1 0 1] <br>
     
 从结果上可以看出读取数据一次为：<br>
 example:0 , label:0<br>
