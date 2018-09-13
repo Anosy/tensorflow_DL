@@ -12,25 +12,26 @@
 1.  inputs = tf.placeholder(np.float32, shape=(32,40,5))  32表示batch_size，40表示max_time也就是最大的时间序列长度，5表示embedding_size<br>
 2.  lstm_cell_1 = tf.contrib.rnn.BasicLSTMCell(num_units=128) 定义LSTM的基本单元，其中隐藏单元的维度为128<br>
 3.
-output,state=tf.nn.dynamic_rnn( 此函数会通过max_time，将网络按照时间展开<br>
-cell=lstm_cell_1,<br>
-inputs=inputs,<br>
-dtype=tf.float32<br>
-)<br>
+        output,state=tf.nn.dynamic_rnn( 此函数会通过max_time，将网络按照时间展开
+        cell=lstm_cell_1,
+        inputs=inputs,
+        dtype=tf.float32
+        )
+        
 ### 多层LSTM
 核心代码：<br>
 lstm_cell=tf.contrib.rnn.MultiRNNCell(cells=[lstm_cell_1,lstm_cell_2,lstm_cell_3])将多个cell给向上来堆叠
 ### 单层双向LSTM
 1.
-lstm_cell_fw = tf.contrib.rnn.BasicLSTMCell(num_units=128)定义了正向的cell<br>
-lstm_cell_bw = tf.contrib.rnn.BasicLSTMCell(num_units=128)定义了反向的cell<br>
+        lstm_cell_fw = tf.contrib.rnn.BasicLSTMCell(num_units=128)定义了正向的cell
+        lstm_cell_bw = tf.contrib.rnn.BasicLSTMCell(num_units=128)定义了反向的cell
 2.
-output,state=tf.nn.bidirectional_dynamic_rnn(将正向的cell和反向的cell合并形成一个网络，并且将其按照时间来展开<br>
-    cell_fw=lstm_cell_fw,<br>
-    cell_bw=lstm_cell_bw,<br>
-    inputs=inputs,<br>
-    dtype=tf.float32<br>
-)<br>
+        output,state=tf.nn.bidirectional_dynamic_rnn(将正向的cell和反向的cell合并形成一个网络，并且将其按照时间来展开
+            cell_fw=lstm_cell_fw,
+            cell_bw=lstm_cell_bw,
+            inputs=inputs,
+            dtype=tf.float32
+        )
 
 ## 第三部分，使用单层LSTM来预测sin函数，具体代码见：predict_sin.py
 核心代码：<br>
@@ -55,7 +56,6 @@ output,state=tf.nn.bidirectional_dynamic_rnn(将正向的cell和反向的cell合
 ![]()<br>
 ### 添加手动初始化和手动展开LSTM
 核心代码：<br>
-
         outputs = list()                                   
         state = init_state
         with tf.variable_scope('RNN'):
@@ -66,7 +66,7 @@ output,state=tf.nn.bidirectional_dynamic_rnn(将正向的cell和反向的cell合
             (cell_output, state) = multi_lstm(X_p[:, timestep, :], state)
             outputs.append(cell_output)
         h = outputs[-1]
-
+        
 ## 第六部分，使用LSTM来实现MNIST分类，具体代码见：LSTM_for_Mnist.py
 核心代码：<br>
 1. rnn_cell = tf.contrib.rnn.BasicLSTMCell(num_units=NUM_UNITS)  定义lstm cell<br>
@@ -78,16 +78,13 @@ output,state=tf.nn.bidirectional_dynamic_rnn(将正向的cell和反向的cell合
             dtype=tf.float32,
             time_major=False
         )
-        
 3. output = tf.layers.dense(inputs=outputs[:, -1, :], units=N_CLASSES)  全连接层，将输出的结果给转化为(batch_size, N_CLASSES)<br>
 4. loss = tf.losses.softmax_cross_entropy(onehot_labels=train_y, logits=output)   定义损失函数<br>
 5. train_op = tf.train.AdamOptimizer(LR).minimize(loss)   定义优化方法<br>
 6.
-
         correct_prediction = tf.equal(tf.argmax(train_y, axis=1), tf.argmax(output, axis=1))  正确率
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
         
-
 最终结果<br>
 train loss: 2.3051 | test accuracy: 0.13<br>
 train loss: 0.0936 | test accuracy: 0.97<br>
