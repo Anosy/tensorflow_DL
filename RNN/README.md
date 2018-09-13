@@ -2,11 +2,11 @@
 
 ## 第一部分，RNN前向传播的实现，具体代码见：simple_rnn_forward.py
 **实现的效果见下图：**<br>
-![]()<br>
+![](https://github.com/Anosy/tensorflow_DL/blob/master/RNN/my_picture/rnn_forward.jpg)<br>
 
 ## 第二部分，LSTM基本结构，以及使用tensorflow来搭建LSTM。具体的代码见：LSTM,.py
 **LSTM的基本结构如下图所示：** <br>
-![]()<br>
+![](https://github.com/Anosy/tensorflow_DL/blob/master/RNN/my_picture/LSTM3.png)<br>
 ### 单层LSTM
 核心代码：<br>
 1.  inputs = tf.placeholder(np.float32, shape=(32,40,5))  32表示batch_size，40表示max_time也就是最大的时间序列长度，5表示embedding_size<br>
@@ -43,7 +43,7 @@ lstm_cell=tf.contrib.rnn.MultiRNNCell(cells=[lstm_cell_1,lstm_cell_2,lstm_cell_3
         h = outputs[:, -1, :]  # 最后一个时间步的输出作为该LSTM层网络的输出
 
 150次迭代结果：<br>
-![]()<br>
+![](https://github.com/Anosy/tensorflow_DL/blob/master/RNN/result_picture/onelayer_lstm.png)<br>
 
 ## 第四部分，使用多层LSTM来预测sin函数，具体代码见：predict_sin_MultiRnnCell.py
 核心代码：<br>
@@ -53,9 +53,11 @@ lstm_cell=tf.contrib.rnn.MultiRNNCell(cells=[lstm_cell_1,lstm_cell_2,lstm_cell_3
         lstm_cell = tf.contrib.rnn.MultiRNNCell(cells=[lstm_cell1, lstm_cell2])
 
 50次迭代的结果：<br>
-![]()<br>
+![](https://github.com/Anosy/tensorflow_DL/blob/master/RNN/result_picture/multi_lstm.png)<br>
+**可以发现，多层LSTM即使只有50次迭代，其效果就很逼近sin函数**
 ### 添加手动初始化和手动展开LSTM
 核心代码：<br>
+
         outputs = list()                                   
         state = init_state
         with tf.variable_scope('RNN'):
