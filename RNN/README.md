@@ -125,6 +125,6 @@ train loss: 0.1219 | test accuracy: 0.98<br>
         8.regressor.fit(train_X, train_y, batch_size=BATCH_SIZE, steps=TRAINING_STEPS)  # 调用fit函数来训练模型
         9.prediction = regressor.predict(test_X) # 预测结果
 得到的结果如下：<br>
-![](https://github.com/Anosy/tensorflow_DL/blob/master/RNN/my_picture/TFLearn_for_sin.png)
+![](https://github.com/Anosy/tensorflow_DL/blob/master/RNN/result_picture/TFLearn_for_sin.png)
 
 
