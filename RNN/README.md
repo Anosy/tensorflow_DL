@@ -106,5 +106,25 @@ train loss: 0.0566 | test accuracy: 0.98<br>
 train loss: 0.1219 | test accuracy: 0.98<br>
 虽然强行使用lstm来搭建MNIST分类系统，但是效果还行！<br>
 
+## 第七部分，使用LSTM的TFLearn接口来实现对sin函数的预测
+核心代码：<br>
+
+        1.cell = tf.contrib.rnn.MultiRNNCell([LstmCell() for _ in range(NUM_LAYERS)])  # 声明多层的LSTM神经网络
+        2.output, _ = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32)   # 按照时间来展开
+        3.output = output[:, -1, :]  # 将得到的最后的输出作为最终的输出
+        4.predictions = tf.layers.dense(inputs=output, units=1)  # 将LSTM网络输出的结果给导入到全连接网络，得到最后的输出结果为shape=()
+        5.loss = tf.losses.mean_squared_error(predictions, labels)  # 定义损失函数mse
+        6.创建优化器并且得到优化步骤
+        train_op = tf.contrib.layers.optimize_loss(
+            loss,
+            tf.contrib.framework.get_global_step(),
+            optimizer='Adagrad',
+            learning_rate=0.1
+            )
+        7.regressor = learn.Estimator(model_fn=lstm_model)  # 自定义封装lstm
+        8.regressor.fit(train_X, train_y, batch_size=BATCH_SIZE, steps=TRAINING_STEPS)  # 调用fit函数来训练模型
+        9.prediction = regressor.predict(test_X) # 预测结果
+得到的结果如下：<br>
+![](https://github.com/Anosy/tensorflow_DL/blob/master/RNN/my_picture/TFLearn_for_sin.png)
 
 
