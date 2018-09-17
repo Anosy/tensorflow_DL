@@ -74,7 +74,7 @@
 ![](https://github.com/Anosy/tensorflow_DL/blob/master/TensorBoard/result_picture/distribution.png)<br>
 **histogram结果图：**<br>
 ![](https://github.com/Anosy/tensorflow_DL/blob/master/TensorBoard/result_picture/histogram.png)<br>
-**注：本部分的log生成太大，所以没有上传！**<br>
+**注：本部分的log生成占用磁盘较大，所以没有上传！**<br>
 
 
 
