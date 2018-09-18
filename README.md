@@ -1,1 +1,3 @@
-# 本部分主要记录了个人tensorflow学习的过程，实时更新中...
+# Tensorflow learning Part I.
+## Reference
+**《Tensorflow 实战google深度学习框架》**
